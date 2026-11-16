@@ -1,0 +1,24 @@
+CREATE DATABASE IF NOT EXISTS currency_converter
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE currency_converter;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  login VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS conversions (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  amount DECIMAL(20, 8) NOT NULL,
+  from_currency CHAR(3) NOT NULL,
+  to_currency CHAR(3) NOT NULL,
+  converted_amount DECIMAL(24, 8) NOT NULL,
+  rate DECIMAL(24, 12) NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_conversions_user FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_conversions_user_timestamp (user_id, timestamp)
+) ENGINE=InnoDB;

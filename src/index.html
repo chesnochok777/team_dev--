@@ -1,47 +1,112 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конвертер валют</title>
-    <!-- Подключаем отдельный CSS-файл -->
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвертер валют</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Блок с конвертером -->
-    <div class="converter-block">
-        <h2>💱 Конвертер валют</h2>
-        
-        <div class="input-group">
-            <label for="amount">Сумма:</label>
-            <input type="number" id="amount" value="1000" min="0">
-        </div>
-
-        <div class="input-group">
-            <label for="fromCurrency">Из валюты:</label>
-            <select id="fromCurrency">
-                <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
-                <option value="USD">🇺🇸 Доллар США (USD)</option>
-                <option value="JPY">🇯🇵 Японская йена (JPY)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="toCurrency">В валюту:</label>
-            <select id="toCurrency">
-                <option value="USD" selected>🇺🇸 Доллар США (USD)</option>
-                <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
-                <option value="JPY">🇯🇵 Японская йена (JPY)</option>
-            </select>
-        </div>
-
-        <button id="convertBtn">Конвертировать</button>
-
-        <div class="result" id="result">Введите сумму и нажмите кнопку</div>
+<div id="authModal" class="auth-modal">
+  <div class="auth-box">
+    <h2 id="authTitle">Вход в систему</h2>
+    <div class="input-group">
+      <label for="loginInput">Логин</label>
+      <input type="text" id="loginInput" placeholder="Введите логин">
     </div>
+    <div class="input-group">
+      <label for="passwordInput">Пароль</label>
+      <div class="password-wrapper">
+        <input type="password" id="passwordInput" placeholder="Введите пароль">
+        <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+      </div>
+    </div>
+    <button id="authSubmitBtn">Войти</button>
+    <div class="auth-switch">
+      <span id="authSwitchText">Нет аккаунта?</span>
+      <a href="#" id="authSwitchLink">Зарегистрироваться</a>
+    </div>
+    <div id="authMessage" class="auth-message"></div>
+  </div>
+</div>
 
-    <!-- Подключаем отдельный JS-файл -->
-    <script src="script.js"></script>
+<div class="converter-block" id="converterBlock" style="display:none;">
+  <div class="user-bar">
+    <span>👤 <strong id="currentUser"></strong></span>
+    <button id="logoutBtn" class="logout-btn">Выйти</button>
+  </div>
+
+  <h2>Конвертер валют</h2>
+
+  <div class="input-group">
+    <label for="amount">Сумма:</label>
+    <input type="number" id="amount" min="0" step="any" value="100">
+  </div>
+
+  <div class="input-group">
+    <label for="fromCurrency">Из валюты:</label>
+    <select id="fromCurrency">
+      <option value="USD">🇺🇸 Доллар США (USD)</option>
+      <option value="EUR">🇪🇺 Евро (EUR)</option>
+      <option value="RUB" selected>🇷🇺 Российский рубль (RUB)</option>
+      <option value="JPY">🇯🇵 Японская иена (JPY)</option>
+      <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+      <option value="CNY">🇨🇳 Китайский юань (CNY)</option>
+      <option value="CHF">🇨🇭 Швейцарский франк (CHF)</option>
+      <option value="CAD">🇨🇦 Канадский доллар (CAD)</option>
+      <option value="AUD">🇦🇺 Австралийский доллар (AUD)</option>
+      <option value="NZD">🇳🇿 Новозеландский доллар (NZD)</option>
+      <option value="HKD">🇭🇰 Гонконгский доллар (HKD)</option>
+      <option value="SGD">🇸🇬 Сингапурский доллар (SGD)</option>
+      <option value="INR">🇮🇳 Индийская рупия (INR)</option>
+      <option value="KRW">🇰🇷 Южнокорейская вона (KRW)</option>
+      <option value="AED">🇦🇪 Дирхам ОАЭ (AED)</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label for="toCurrency">В валюту:</label>
+    <select id="toCurrency">
+      <option value="USD" selected>🇺🇸 Доллар США (USD)</option>
+      <option value="EUR">🇪🇺 Евро (EUR)</option>
+      <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
+      <option value="JPY">🇯🇵 Японская иена (JPY)</option>
+      <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+      <option value="CNY">🇨🇳 Китайский юань (CNY)</option>
+      <option value="CHF">🇨🇭 Швейцарский франк (CHF)</option>
+      <option value="CAD">🇨🇦 Канадский доллар (CAD)</option>
+      <option value="AUD">🇦🇺 Австралийский доллар (AUD)</option>
+      <option value="NZD">🇳🇿 Новозеландский доллар (NZD)</option>
+      <option value="HKD">🇭🇰 Гонконгский доллар (HKD)</option>
+      <option value="SGD">🇸🇬 Сингапурский доллар (SGD)</option>
+      <option value="INR">🇮🇳 Индийская рупия (INR)</option>
+      <option value="KRW">🇰🇷 Южнокорейская вона (KRW)</option>
+      <option value="AED">🇦🇪 Дирхам ОАЭ (AED)</option>
+    </select>
+  </div>
+
+  <button id="convertBtn">Подтвердить</button>
+  <button id="refreshBtn" class="refresh-button">Обновить курсы</button>
+
+  <div id="result" class="result">Загружаем курсы…</div>
+
+  <div class="history-section">
+    <h3>История операций</h3>
+    <div id="historyList" class="history-list">
+      <p class="history-empty">Пока нет сохранённых операций</p>
+    </div>
+    <button id="clearHistoryBtn" class="clear-history-btn">🗑️ Очистить историю</button>
+  </div>
+
+  <div class="rate-info" id="rateInfo"></div>
+  <div class="source-info">
+    Бесплатно, без регистрации. Курсы обновляются примерно раз в сутки. Без учёта комиссии банка. 
+    <a id="providerLink" href="https://www.exchangerate-api.com/" target="_blank" rel="noopener">Rates By Exchange Rate API</a>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="tests/scriptTest.js"></script>
 </body>
 </html>
